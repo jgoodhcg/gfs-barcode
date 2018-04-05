@@ -22,4 +22,7 @@ services:
     volumes:
       - .:/usr/app/gfs-barcode
     working_dir: /usr/app/gfs-barcode
+    ports:
+      - 19000:19000
+      - 19001:19001
     command: ["yarn", "install"]
