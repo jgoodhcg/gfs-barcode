@@ -5,11 +5,15 @@
               [gfs-barcode.subs]))
 
 (def ReactNative (js/require "react-native"))
+(def Expo (js/require "expo"))
 
 (def app-registry (.-AppRegistry ReactNative))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 (def image (r/adapt-react-class (.-Image ReactNative)))
+(def bar-code-scanner (r/adapt-react-class (.-BarCodeScanner Expo)))
+(def svg (r/adapt-react-class (.-Svg Expo)))
+(def circle (r/adapt-react-class (.-Circle (.-Svg Expo))))
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
 (def Alert (.-Alert ReactNative))
 
@@ -17,16 +21,22 @@
   (.alert Alert title))
 
 (defn app-root []
-  (let [greeting (subscribe [:get-greeting])]
+  (let [camera-permission (subscribe [:get-camera-permission])]
     (fn []
       [view {:style {:flex-direction "column" :margin 40 :align-items "center"}}
-       [image {:source (js/require "./assets/images/cljs.png")
-               :style {:width 200
-                       :height 200}}]
-       [text {:style {:font-size 30 :font-weight "100" :margin-bottom 20 :text-align "right"}} @greeting]
-       [touchable-highlight {:style {:background-color "#999" :padding 10 :border-radius 5}
-                             :on-press #(alert "HELLO!")}
-        [text {:style {:color "white" :text-align "center" :font-weight "bold"}} "press me!"]]])))
+       [text {:style {:font-size 30 :font-weight "100" :margin-bottom 20 :text-align "right"}} "you did it!"]
+       [svg {:height 100 :width 100}
+        [circle {:cx 50 :cy 50 :r 25 :fill "#ff22ff"}]]
+       [bar-code-scanner {:style {:height 200
+                                  :width 200}
+                          :onBarCodeRead (fn [brjson]
+                                           (let [br (js->clj
+                                                     brjson
+                                                     :keywordize-keys true)
+                                                 data (:data br)
+                                                 type (:type br)]
+                                             (alert (str type "-" data))))}]
+       ])))
 
 (defn init []
   (dispatch-sync [:initialize-db])

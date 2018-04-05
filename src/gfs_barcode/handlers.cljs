@@ -34,7 +34,7 @@
     app-db))
 
 (reg-event-db
-  :set-greeting
+  :set-camera-permission
   [validate-spec]
   (fn [db [_ value]]
-    (assoc db :greeting value)))
+    (assoc db :camera-permission value)))

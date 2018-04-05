@@ -2,6 +2,6 @@
   (:require [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
- :get-greeting
+ :get-camera-permission
  (fn [db _]
-   (:greeting db)))
+   (:camera-permission db)))
