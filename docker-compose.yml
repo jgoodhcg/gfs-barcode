@@ -1,0 +1,25 @@
+version: "3"
+services:
+
+  clj:
+    image: clojure
+    user: "${UID}:0"
+    depends_on:
+      - node
+    ports:
+      - 3449:3449
+    volumes:
+      - .:/usr/app/gfs-barcode
+      - ./.lein:/.lein
+    working_dir: /usr/app/gfs-barcode
+    command: ["lein", "figwheel"]
+
+  node:
+    build:
+      context: .
+      dockerfile: node.dev.dockerfile
+    user: "${UID}:0"
+    volumes:
+      - .:/usr/app/gfs-barcode
+    working_dir: /usr/app/gfs-barcode
+    command: ["yarn", "install"]
