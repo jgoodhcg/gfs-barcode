@@ -8,6 +8,7 @@ services:
       - node
     ports:
       - 3449:3449
+      - 7000:7000
     volumes:
       - .:/usr/app/gfs-barcode
       - ./.lein:/.lein

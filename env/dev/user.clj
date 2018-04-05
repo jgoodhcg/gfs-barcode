@@ -215,7 +215,9 @@
       {:build-ids        (if (seq build-ids)
                            build-ids
                            ["main"])
-       :all-builds       (get-cljs-builds)})
+       :all-builds       (get-cljs-builds)
+       :figwheel-options {:nrepl-port 7000
+                          :nrepl-host "0.0.0.0"}})
     (ra/cljs-repl))
 
   (defn stop-figwheel
