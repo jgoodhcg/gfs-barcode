@@ -24,12 +24,23 @@
 (defn alert [title]
   (.alert Alert title))
 
+(defn fetch-example []
+  (let [data (-> (js/fetch "https://jsonplaceholder.typicode.com/posts"
+                           ;; (clj->js {:method "POST"})
+                           )
+                 (.then #(.json %)) ;; warning: `.json` returns a promise that resolves to the parsed json body
+                 (.then js->clj)
+                 (.then #(println (keys (first %))))
+                 (.catch #(js/console.error %)))]))
+
 (defn home-screen [props]
   (let [navigate (get-in props [:navigation :navigate])]
     [view {:style {:flex-direction "column" :margin 40 :align-items "center"}}
      [svg {:height 100 :width 100}
-      [circle {:cx 50 :cy 50 :r 25 :fill "#ff2211"
-               :onPress #(navigate "Scan")}]]
+      [circle {:cx 50 :cy 25 :r 25 :fill "#ff2211"
+               :onPress #(navigate "Scan")}]
+      [circle {:cx 50 :cy 75 :r 25 :fill "#2222ff"
+               :onPress fetch-example}]]
      [text {:style {:font-size 30 :font-weight "100"
                     :margin-bottom 20 :text-align "right"}} "Home Screen"]]
     )
