@@ -9,6 +9,9 @@
 
 (def ReactNative (js/require "react-native"))
 (def Expo (js/require "expo"))
+(def ReactNativeFloatingAction (js/require "react-native-floating-action"))
+(def floating-action (r/adapt-react-class
+                     (.-FloatingAction ReactNativeFloatingAction)))
 (defonce ReactNavigation (js/require "react-navigation"))
 
 (def app-registry (.-AppRegistry ReactNative))
@@ -21,6 +24,10 @@
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
 (def Alert (.-Alert ReactNative))
 
+(def actions (clj->js [{:text "test"
+                        :icon (js/require "./assets/images/cljs.png")
+                        :name "test-fab"
+                        :position 1}]))
 (defn alert [title]
   (.alert Alert title))
 
@@ -35,14 +42,21 @@
 
 (defn home-screen [props]
   (let [navigate (get-in props [:navigation :navigate])]
-    [view {:style {:flex-direction "column" :margin 40 :align-items "center"}}
+    [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
      [svg {:height 100 :width 100}
       [circle {:cx 50 :cy 25 :r 25 :fill "#ff2211"
                :onPress #(navigate "Scan")}]
       [circle {:cx 50 :cy 75 :r 25 :fill "#2222ff"
                :onPress fetch-example}]]
      [text {:style {:font-size 30 :font-weight "100"
-                    :margin-bottom 20 :text-align "right"}} "Home Screen"]]
+                    :margin-bottom 20 :text-align "right"}} "Home Screen"]
+     [floating-action {:actions []
+                       :overlayColor "rgba(0,0,0,0)"
+                       :floatingIcon (r/as-element [text {:style {:font-size 15
+                                                                  :color "white"}}
+                                                    "[ |||| ]"])
+                       :onPressMain #(println (str "what do we get? " %))}]
+     ]
     )
   )
 
