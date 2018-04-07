@@ -2,10 +2,14 @@
     (:require [reagent.core :as r :refer [atom]]
               [re-frame.core :refer [subscribe dispatch dispatch-sync]]
               [gfs-barcode.handlers]
+              [cljs-react-navigation.reagent
+               :refer [stack-navigator
+                       stack-screen] :as nav]
               [gfs-barcode.subs]))
 
 (def ReactNative (js/require "react-native"))
 (def Expo (js/require "expo"))
+(defonce ReactNavigation (js/require "react-navigation"))
 
 (def app-registry (.-AppRegistry ReactNative))
 (def text (r/adapt-react-class (.-Text ReactNative)))
@@ -20,13 +24,23 @@
 (defn alert [title]
   (.alert Alert title))
 
-(defn app-root []
+(defn home-screen [props]
+  (let [navigate (get-in props [:navigation :navigate])]
+    [view {:style {:flex-direction "column" :margin 40 :align-items "center"}}
+     [svg {:height 100 :width 100}
+      [circle {:cx 50 :cy 50 :r 25 :fill "#ff2211"
+               :onPress #(navigate "Scan")}]]
+     [text {:style {:font-size 30 :font-weight "100"
+                    :margin-bottom 20 :text-align "right"}} "Home Screen"]]
+    )
+  )
+
+(defn scan-screen [props]
   (let [camera-permission (subscribe [:get-camera-permission])]
     (fn []
       [view {:style {:flex-direction "column" :margin 40 :align-items "center"}}
-       [text {:style {:font-size 30 :font-weight "100" :margin-bottom 20 :text-align "right"}} "you did it!"]
-       [svg {:height 100 :width 100}
-        [circle {:cx 50 :cy 50 :r 25 :fill "#ff22ff"}]]
+       [text {:style {:font-size 30 :font-weight "100"
+                      :margin-bottom 20 :text-align "right"}} "you did it!"]
        [bar-code-scanner {:style {:height 200
                                   :width 200}
                           :onBarCodeRead (fn [brjson]
@@ -35,9 +49,29 @@
                                                      :keywordize-keys true)
                                                  data (:data br)
                                                  type (:type br)]
-                                             (alert (str type "-" data))))}]
-       ])))
+                                             (alert (str type "-" data))))}]])))
+
+(def AllRoutesStack
+  (stack-navigator {:Home {:screen (stack-screen home-screen)}
+                    :Scan {:screen (stack-screen scan-screen)}}
+                   {:headerMode "none"}))
+
+;; (defn app-root []
+;;   (r/create-class
+;;    (let [nav-state (subscribe [::nav/routing-state])]
+;;      {:component-will-mount (fn []
+;;                               (when-not @nav-state
+;;                                 (dispatch-sync [:reset-routing-state])))
+;;       :reagent-render       (fn []
+;;                               [router {:root-router AllRoutesStack
+;;                                        :init-route-name "Home"}])})))
+
+(defn app-root []
+  (fn []
+    [:> AllRoutesStack {}]))
 
 (defn init []
   (dispatch-sync [:initialize-db])
-  (.registerComponent app-registry "main" #(r/reactify-component app-root)))
+  ;; (.registerRootComponent Expo (r/reactify-component app-root))
+  (.registerComponent app-registry "main" #(r/reactify-component app-root))
+  )
