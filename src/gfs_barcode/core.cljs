@@ -13,6 +13,8 @@
 (def floating-action (r/adapt-react-class
                      (.-FloatingAction ReactNativeFloatingAction)))
 (defonce ReactNavigation (js/require "react-navigation"))
+(def ReactNativeCommunications (js/require "react-native-communications"))
+(def email (.-email ReactNativeCommunications))
 
 (def app-registry (.-AppRegistry ReactNative))
 (def text (r/adapt-react-class (.-Text ReactNative)))
@@ -40,6 +42,7 @@
                  (.then #(println (keys (first %))))
                  (.catch #(js/console.error %)))]))
 
+
 (defn home-screen [props]
   (let [navigate (get-in props [:navigation :navigate])]
     [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
@@ -55,10 +58,7 @@
                        :floatingIcon (r/as-element [text {:style {:font-size 15
                                                                   :color "white"}}
                                                     "[ |||| ]"])
-                       :onPressMain #(println (str "what do we get? " %))}]
-     ]
-    )
-  )
+                       :onPressMain #(email)}]]))
 
 (defn scan-screen [props]
   (let [camera-permission (subscribe [:get-camera-permission])]
