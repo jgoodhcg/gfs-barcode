@@ -24,7 +24,7 @@
   ([title]
    (alert-fn title))
   ([title message buttons]
-   (alert-fn title message (clj->js buttons))))
+   (alert-fn title message (clj->js buttons) (clj->js {:cancelable false}))))
 (def button (r/adapt-react-class (.-Button ReactNative)))
 
 
