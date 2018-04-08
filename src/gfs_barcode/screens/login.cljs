@@ -3,6 +3,7 @@
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [gfs-barcode.handlers]
             [gfs-barcode.subs]
+            [gfs-barcode.common.error :refer [error-alert]]
             [gfs-barcode.native :refer [view text button alert]]))
 
 (defn login-screen
@@ -17,21 +18,29 @@
   [props]
   (fn [{:keys [screenProps navigation] :as props}]
     (let [{:keys [navigate goBack]} navigation
-          message @(subscribe [:message])]
+          message @(subscribe [:message])
+          session-id @(subscribe [:session-id])]
 
-      (when (not= message "")
-        (alert "Error" message
-               [{:text "OK"
-                 :onPress #(dispatch [:set-message ""])}]))
+      (error-alert message)
+      (when (some? session-id) (navigate "Scans")) ;; TODO move to lifecycle method?
 
       [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
        [text {:style {:font-size 30 :font-weight "100"
                       :margin-bottom 20 :text-align "right"}} "Login Screen"]
-       [button {:onPress #(dispatch [:set-message "yeayea"])
-                :title "set error message"
-                :color "#841584"
-                :accessibilityLabel "go to scans"}]
+
+       (if (some? session-id)
+         [button {:onPress #(dispatch [:set-session-id nil])
+                  :title "Logout"
+                  :color "#841584"
+                  :accessibilityLabel "Logout"}]
+
+         [button {:onPress #(dispatch [:login {:user "123" :pass "123"}])
+                  :title "Login"
+                  :color "#841584"
+                  :accessibilityLabel "Login"}])
+
        [button {:onPress #(navigate "Scans")
                 :title "go to scans"
                 :color "#841584"
-                :accessibilityLabel "go to scans"}]])))
+                :accessibilityLabel "go to scans"}]
+       ])))

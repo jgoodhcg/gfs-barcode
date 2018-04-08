@@ -10,3 +10,8 @@
  :message
  (fn [db _]
    (:message db)))
+
+(reg-sub
+ :session-id
+ (fn [db _]
+   (:session-id db)))

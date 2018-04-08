@@ -1,6 +1,6 @@
 (ns gfs-barcode.handlers
   (:require
-    [re-frame.core :refer [reg-event-db ->interceptor]]
+    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx ->interceptor dispatch]]
     [clojure.spec.alpha :as s]
     [gfs-barcode.db :as db :refer [app-db]]))
 
@@ -44,3 +44,26 @@
   validate-spec
   (fn [db [_ value]]
     (assoc db :message value)))
+
+(reg-event-db
+ :set-session-id
+ (fn [db [_ id]]
+   (assoc db :session-id id)))
+
+(reg-fx
+ :login-request
+ (fn [creds]
+   ;; this is were we would
+   ;; use fetch to login with creds
+   ;; hashed pass of course
+   ;; then dispatch the return
+   (println "would fetch login now")
+   (dispatch [:set-session-id "123"])))
+
+(reg-event-fx
+ :login
+ validate-spec
+ (fn [cofx [_ creds]]
+   (println (keys cofx))
+   {:db (:db cofx)
+    :login-request creds}))
