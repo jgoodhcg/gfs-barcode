@@ -58,7 +58,26 @@
    ;; hashed pass of course
    ;; then dispatch the return
    (println "would fetch login now")
-   (dispatch [:set-session-id "123"])))
+   (dispatch [:set-session-id "123"])
+   (dispatch [:get-all-scans "123"])))
+
+(reg-fx
+ :scans-request
+ (fn [session-id]
+   (println "would fetch scans right now with session-id")
+   (dispatch [:set-scans [{:itemCode "100129"
+                           :itemDesc "AP Ketchup, Tomato, w/Salt, Crown Collec"}]])))
+(reg-event-fx
+ :get-all-scans
+ (fn [cofx _]
+   {:db (:db cofx)
+    :scans-request (get-in cofx [:db :session-id])}))
+
+(reg-event-db
+ :set-scans
+ validate-spec
+ (fn [db [_ scans]]
+   (assoc db :scans scans)))
 
 (reg-event-fx
  :login
