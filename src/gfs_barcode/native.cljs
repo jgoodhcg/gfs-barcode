@@ -19,6 +19,12 @@
 (def circle (r/adapt-react-class (.-Circle (.-Svg Expo))))
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
 (def Alert (.-Alert ReactNative))
+(def alert-fn (.-alert Alert))
+(defn alert
+  ([title]
+   (alert-fn title))
+  ([title message buttons]
+   (alert-fn title message (clj->js buttons))))
 (def button (r/adapt-react-class (.-Button ReactNative)))
 
 

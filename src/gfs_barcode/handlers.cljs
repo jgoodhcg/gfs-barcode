@@ -40,13 +40,7 @@
     (assoc db :camera-permission value)))
 
 (reg-event-db
-  :reset-routing-state
+  :set-message
   validate-spec
-  (fn [db _]
-    (assoc db :routing (clj->js {:index  1,
-                                 :routes [{:index 0
-                                           :key "Home"
-                                           :routeName "Home"}
-                                          {:index 0
-                                           :key "Scan"
-                                           :routeName "Scan"}]}))))
+  (fn [db [_ value]]
+    (assoc db :message value)))

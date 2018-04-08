@@ -11,24 +11,22 @@
               [gfs-barcode.screens.read :refer [read-screen]]
               [gfs-barcode.screens.item :refer [item-screen]]
               [gfs-barcode.native :refer [email
+                                          alert
                                           app-registry
                                           text
                                           view
                                           image
+                                          floating-action
                                           bar-code-scanner
                                           svg
                                           circle
                                           touchable-highlight
-                                          Alert
                                           button]]))
 
 (def actions (clj->js [{:text "test"
                         :icon (js/require "./assets/images/cljs.png")
                         :name "test-fab"
                         :position 1}]))
-
-(defn alert [title]
-  (.alert Alert title))
 
 (defn fetch-example []
   (let [data (-> (js/fetch "https://jsonplaceholder.typicode.com/posts"

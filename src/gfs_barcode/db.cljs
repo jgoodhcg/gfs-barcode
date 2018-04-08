@@ -3,8 +3,11 @@
 
 ;; spec of app-db
 (s/def ::camera-permisssion boolean?)
+(s/def ::message string?)
 (s/def ::app-db
-  (s/keys :req-un [::camera-permission]))
+  (s/keys :req-un [::camera-permission
+                   ::message]))
 
 ;; initial state of app-db
-(def app-db {:camera-permission false})
+(def app-db {:camera-permission false
+             :message "testing error message"})
