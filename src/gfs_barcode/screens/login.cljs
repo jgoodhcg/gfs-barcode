@@ -4,7 +4,7 @@
             [gfs-barcode.handlers]
             [gfs-barcode.subs]
             [gfs-barcode.common.error :refer [error-alert]]
-            [gfs-barcode.native :refer [view text button alert]]))
+            [gfs-barcode.native :refer [view text text-input button alert]]))
 
 (defn login-screen
   "Each Screen will receive two props:
@@ -22,25 +22,32 @@
           session-id @(subscribe [:session-id])]
 
       (error-alert message)
-      (when (some? session-id) (navigate "Scans")) ;; TODO move to lifecycle method?
 
-      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
-       [text {:style {:font-size 30 :font-weight "100"
-                      :margin-bottom 20 :text-align "right"}} "Login Screen"]
+      [view {:style {:flex 1
+                     :flex-direction "column"
+                     :align-items "center"
+                     :justify-content "center"}}
+
+       [text-input {:height 40 :width 200 :placeholder "email"}]
+       [text-input {:height 40 :width 200 :placeholder "password"
+                    :style {:margin-bottom 25}}]
 
        (if (some? session-id)
          [button {:onPress #(dispatch [:set-session-id nil])
                   :title "Logout"
+                  :style {:width 200}
                   :color "#841584"
                   :accessibilityLabel "Logout"}]
 
          [button {:onPress #(dispatch [:login {:user "123" :pass "123"}])
                   :title "Login"
+                  :width 200
+                  :style {:width 200}
                   :color "#841584"
                   :accessibilityLabel "Login"}])
 
-       [button {:onPress #(navigate "Scans")
-                :title "go to scans"
-                :color "#841584"
-                :accessibilityLabel "go to scans"}]
-       ])))
+       (when (some? session-id)
+         [button {:onPress #(navigate "Scans")
+                  :title "Recent Scans"
+                  :color "#841584"
+                    :accessibilityLabel "Recent Scans"}])])))
