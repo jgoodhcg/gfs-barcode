@@ -6,6 +6,10 @@
                :refer [stack-navigator
                        stack-screen] :as nav]
               [gfs-barcode.subs]
+              [gfs-barcode.screens.login :refer [login-screen]]
+              [gfs-barcode.screens.scans :refer [scans-screen]]
+              [gfs-barcode.screens.read :refer [read-screen]]
+              [gfs-barcode.screens.item :refer [item-screen]]
               [gfs-barcode.native :refer [email
                                           app-registry
                                           text
@@ -67,58 +71,6 @@
                                                  data (:data br)
                                                  type (:type br)]
                                              (alert (str type "-" data))))}]])))
-
-(defn login-screen
-  "Each Screen will receive two props:
- - screenProps - Extra props passed down from the router (rarely used)
- - navigation  - The main navigation functions in a map as follows:
-   {:state     - routing state for this screen
-    :dispatch  - generic dispatch fn
-    :goBack    - pop's the current screen off the stack
-    :navigate  - most common way to navigate to the next screen
-    :setParams - used to change the params for the current screen}"
-  [props]
-  (fn [{:keys [screenProps navigation] :as props}]
-    (let [{:keys [navigate goBack]} navigation]
-      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
-       [text {:style {:font-size 30 :font-weight "100"
-                      :margin-bottom 20 :text-align "right"}} "Login Screen"]
-       [button {:onPress #(navigate "Scans")
-                :title "go to scans"
-                :color "#841584"
-                :accessibilityLabel "go to scans"}]])))
-
-(defn scans-screen
-  [props]
-  (fn [{:keys [screenProps navigation] :as props}]
-    (let [{:keys [navigate goBack]} navigation]
-      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
-       [text {:style {:font-size 30 :font-weight "100"
-                      :margin-bottom 20 :text-align "right"}} "Scan Screen"]
-       [button {:onPress #(navigate "Read")
-                :title "go to read"
-                :color "#841584"
-                :accessibilityLabel "go to read"}]])))
-
-(defn read-screen
-  [props]
-  (fn [{:keys [screenProps navigation] :as props}]
-    (let [{:keys [navigate goBack]} navigation]
-      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
-       [text {:style {:font-size 30 :font-weight "100"
-                      :margin-bottom 20 :text-align "right"}} "Read Screen"]
-       [button {:onPress #(navigate "Item")
-                :title "go to item"
-                :color "#841584"
-                :accessibilityLabel "go to item"}]])))
-
-(defn item-screen
-  [props]
-  (fn [{:keys [screenProps navigation] :as props}]
-    (let [{:keys [navigate goBack]} navigation]
-      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
-       [text {:style {:font-size 30 :font-weight "100"
-                      :margin-bottom 20 :text-align "right"}} "Item Screen"]])))
 
 (def AllRoutesStack
   (stack-navigator {:Login {:screen (stack-screen login-screen)}
