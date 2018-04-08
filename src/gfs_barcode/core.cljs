@@ -25,6 +25,7 @@
 (def circle (r/adapt-react-class (.-Circle (.-Svg Expo))))
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
 (def Alert (.-Alert ReactNative))
+(def button (r/adapt-react-class (.-Button ReactNative)))
 
 (def actions (clj->js [{:text "test"
                         :icon (js/require "./assets/images/cljs.png")
@@ -41,7 +42,6 @@
                  (.then js->clj)
                  (.then #(println (keys (first %))))
                  (.catch #(js/console.error %)))]))
-
 
 (defn home-screen [props]
   (let [navigate (get-in props [:navigation :navigate])]
@@ -76,9 +76,63 @@
                                                  type (:type br)]
                                              (alert (str type "-" data))))}]])))
 
+(defn login-screen
+  "Each Screen will receive two props:
+ - screenProps - Extra props passed down from the router (rarely used)
+ - navigation  - The main navigation functions in a map as follows:
+   {:state     - routing state for this screen
+    :dispatch  - generic dispatch fn
+    :goBack    - pop's the current screen off the stack
+    :navigate  - most common way to navigate to the next screen
+    :setParams - used to change the params for the current screen}"
+  [props]
+  (fn [{:keys [screenProps navigation] :as props}]
+    (let [{:keys [navigate goBack]} navigation]
+      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
+       [text {:style {:font-size 30 :font-weight "100"
+                      :margin-bottom 20 :text-align "right"}} "Login Screen"]
+       [button {:onPress #(navigate "Scans")
+                :title "go to scans"
+                :color "#841584"
+                :accessibilityLabel "go to scans"}]])))
+
+(defn scans-screen
+  [props]
+  (fn [{:keys [screenProps navigation] :as props}]
+    (let [{:keys [navigate goBack]} navigation]
+      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
+       [text {:style {:font-size 30 :font-weight "100"
+                      :margin-bottom 20 :text-align "right"}} "Scan Screen"]
+       [button {:onPress #(navigate "Read")
+                :title "go to read"
+                :color "#841584"
+                :accessibilityLabel "go to read"}]])))
+
+(defn read-screen
+  [props]
+  (fn [{:keys [screenProps navigation] :as props}]
+    (let [{:keys [navigate goBack]} navigation]
+      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
+       [text {:style {:font-size 30 :font-weight "100"
+                      :margin-bottom 20 :text-align "right"}} "Read Screen"]
+       [button {:onPress #(navigate "Item")
+                :title "go to item"
+                :color "#841584"
+                :accessibilityLabel "go to item"}]])))
+
+(defn item-screen
+  [props]
+  (fn [{:keys [screenProps navigation] :as props}]
+    (let [{:keys [navigate goBack]} navigation]
+      [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
+       [text {:style {:font-size 30 :font-weight "100"
+                      :margin-bottom 20 :text-align "right"}} "Item Screen"]])))
+
 (def AllRoutesStack
-  (stack-navigator {:Home {:screen (stack-screen home-screen)}
-                    :Scan {:screen (stack-screen scan-screen)}}
+  (stack-navigator {:Login {:screen (stack-screen login-screen)}
+                    :Scans {:screen (stack-screen scans-screen)}
+                    :Read  {:screen (stack-screen read-screen)}
+                    :Item  {:screen (stack-screen item-screen)}}
                    {:headerMode "none"}))
 
 ;; (defn app-root []
