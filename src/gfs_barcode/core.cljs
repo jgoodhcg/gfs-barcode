@@ -6,7 +6,6 @@
                :refer [stack-navigator
                        stack-screen] :as nav]
               [gfs-barcode.subs]
-              [gfs-barcode.screens.login :refer [login-screen]]
               [gfs-barcode.screens.scans :refer [scans-screen]]
               [gfs-barcode.screens.read :refer [read-screen]]
               [gfs-barcode.screens.item :refer [item-screen]]
@@ -71,11 +70,11 @@
                                              (alert (str type "-" data))))}]])))
 
 (def AllRoutesStack
-  (stack-navigator {:Login {:screen (stack-screen login-screen)}
-                    :Scans {:screen (stack-screen scans-screen)}
+  (stack-navigator {:Scans {:screen (stack-screen scans-screen)}
                     :Read  {:screen (stack-screen read-screen)}
                     :Item  {:screen (stack-screen item-screen)}}
-                   {:headerMode "none"}))
+                   {:headerMode "none"
+                    :initRouteName "Scans"}))
 
 ;; (defn app-root []
 ;;   (r/create-class
