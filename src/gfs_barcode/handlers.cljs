@@ -86,3 +86,54 @@
    (println (keys cofx))
    {:db (:db cofx)
     :login-request creds}))
+(defn both-start-with
+  "Given two strings return the arbitrarily long string that both start with.
+  Works by walking one string a character at a time and comparing to the other string.
+  Case sensitive!"
+  [string-1 string-2]
+  (-> (take-while
+       #(clojure.string/starts-with?
+         string-2
+         (clojure.string/join (take % string-1)))
+       (range (+ 1 (count string-1))))
+
+      (last)
+      (take string-1)
+      (clojure.string/join)))
+
+(defn generate-collapsed-data-map [sorted-item-keys]
+  (reduce
+   (fn [collapsed-data item-key]
+     (cond
+       ;; first pass compares first two keys
+       (string? collapsed-data)
+       (let [other-item-key collapsed-data
+             common-start (both-start-with item-key other-item-key)]
+         (if (<= 3 (count common-start))
+           {common-start [other-item-key item-key]
+            :unmatched []}
+           {:unmatched [other-item-key item-key]}))
+
+       ;; comparing next key to data accumulated
+       (map? collapsed-data)
+       (let [commons (keys collapsed-data)
+             unmatched (:unmatched collapsed-data)
+             match   (some #(if (clojure.string/starts-with? item-key %) %) commons)]
+         (if (some? match)
+           (assoc collapsed-data match (cons item-key (get collapsed-data match)))
+           ;; check the unmatched stuff
+           (let [match (some
+                        #(let [common-start (both-start-with item-key %)]
+                           (if (<= 3 (count common-start))
+                             %))
+                        unmatched)]
+             (if (some? match)
+               (let [common-start (both-start-with match item-key)]
+                 (-> collapsed-data
+                     (assoc common-start [item-key match])
+                     (assoc :unmatched (remove #(= match %) unmatched))))
+               (assoc collapsed-data
+                      :unmatched (cons item-key unmatched))))))
+       :else
+       {}))
+   sorted-item-keys))
