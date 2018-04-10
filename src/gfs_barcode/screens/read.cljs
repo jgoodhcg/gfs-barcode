@@ -5,7 +5,7 @@
             [gfs-barcode.subs]
             [gfs-barcode.common.error :refer [error-alert]]
             [gfs-barcode.common.login :refer [login-view]]
-            [gfs-barcode.native :refer [view text button alert]]))
+            [gfs-barcode.native :refer [view text button alert bar-code-scanner]]))
 
 (defn read-screen
   [props]
@@ -17,13 +17,29 @@
       (error-alert message)
 
       (if (some? session-id)
-        [view {:style {:flex 1 :flex-direction "column" :margin-top 40 :align-items "center"}}
+        [view {:style {:flex 1 :flex-direction "column"
+                       :align-items "center"
+                       :justify-content "center"}}
          [text {:style {:font-size 30 :font-weight "100"
-                        :margin-bottom 20 :text-align "right"}} "Read Screen"]
-         [button {:onPress #(navigate "Item")
-                  :title "go to item"
-                  :color "#841584"
-                  :accessibilityLabel "go to item"}]]
+                        :margin-bottom 20 :text-align "right"}} "Scan Barcode"]
+
+         [bar-code-scanner {:style {:height 200
+                                    :width 350}
+                            :onBarCodeRead
+                            (fn [brjson]
+                              (navigate "Item")
+                              (let [br (js->clj
+                                        brjson
+                                        :keywordize-keys true)
+                                    data (:data br)
+                                    data-conformed (->> data
+                                                        (str)
+                                                        (seq)
+                                                        (butlast)
+                                                        (clojure.string/join))
+                                    type (:type br)]
+                                (dispatch
+                                 [:set-scanned-barcode data-conformed])))}]]
 
         (login-view)))))
 

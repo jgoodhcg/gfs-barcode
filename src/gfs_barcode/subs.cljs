@@ -15,3 +15,8 @@
  :session-id
  (fn [db _]
    (:session-id db)))
+
+(reg-sub
+ :scans
+ (fn [db _]
+   (:scans db)))
