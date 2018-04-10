@@ -19,7 +19,9 @@
       (take string-1)
       (clojure.string/join)))
 
-(defn generate-collapsed-data-map [sorted-item-keys]
+(defn generate-collapsed-data-map
+  "Given a list of strings and a number it will return a map where all the strings are grouped by a substring of at least n characters long. Substring starts from the beginning of the word. Example, if the list was [zinc1 zinc2 alpha1 alpha2 bread] with n = 3 the result would be {zinc [zinc1 zinc2] alpha [alpha1 alpha2] :unmatched [bread]}"
+  [sorted-item-keys n]
   (reduce
    (fn [collapsed-data item-key]
      (cond
@@ -27,7 +29,7 @@
        (string? collapsed-data)
        (let [other-item-key collapsed-data
              common-start (both-start-with item-key other-item-key)]
-         (if (<= 3 (count common-start))
+         (if (<= n (count common-start))
            {common-start [other-item-key item-key]
             :unmatched []}
            {:unmatched [other-item-key item-key]}))
@@ -42,7 +44,7 @@
            ;; check the unmatched stuff
            (let [match (some
                         #(let [common-start (both-start-with item-key %)]
-                           (if (<= 3 (count common-start))
+                           (if (<= n (count common-start))
                              %))
                         unmatched)]
              (if (some? match)
@@ -202,8 +204,17 @@
    (let [sorted-keys-list (->> item-data
                                (keys)
                                (sort))
-         collapsed-map (generate-collapsed-data-map
-                        sorted-keys-list)]
+
+         collapsed-map-with-unmatched (generate-collapsed-data-map
+                                       sorted-keys-list 3)
+
+         collapsed-map (merge ;; this is for rendering on item screen
+                        (dissoc collapsed-map-with-unmatched :unmatched)
+                        (->> (:unmatched collapsed-map-with-unmatched)
+                             (map (fn [un-matched]
+                                    {un-matched [un-matched]}))
+                             (reduce merge)))]
+
      (println "Sorted keys: " (count sorted-keys-list))
      (assoc db :item {:item-data item-data
                       :collapsed-map collapsed-map}))))

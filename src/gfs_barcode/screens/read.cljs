@@ -38,6 +38,8 @@
                                                         (butlast)
                                                         (clojure.string/join))
                                     type (:type br)]
+                                ;; TODO fix this with something from here
+                                ;; https://github.com/expo/expo/issues/345
                                 (if (not= scanned-barcode data-conformed)
                                   (do
                                     (navigate "Item")

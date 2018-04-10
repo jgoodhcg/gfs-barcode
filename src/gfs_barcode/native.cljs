@@ -6,9 +6,7 @@
 (def ReactNativeFloatingAction (js/require "react-native-floating-action"))
 (defonce ReactNavigation (js/require "react-navigation"))
 (def ReactNativeCommunications (js/require "react-native-communications"))
-;; (def ReactNativeCollapsible (js/require "react-native-collapsible"))
 
-;; (def collapsible (r/adapt-react-class (.-Collapsible ReactNativeCollapsible)))
 (def floating-action (r/adapt-react-class
                      (.-FloatingAction ReactNativeFloatingAction)))
 (def email (.-email ReactNativeCommunications))
