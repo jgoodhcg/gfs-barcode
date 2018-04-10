@@ -216,5 +216,10 @@
                              (reduce merge)))]
 
      (println "Sorted keys: " (count sorted-keys-list))
-     (assoc db :item {:item-data item-data
-                      :collapsed-map collapsed-map}))))
+     (merge
+      db
+      {:item {:item-data item-data
+              :collapsed-map collapsed-map}}
+      {:scans (cons {:itemCode (get item-data "itemCode")
+                     :itemDesc (get item-data "itemDesc")}
+                    (:scans db))}))))

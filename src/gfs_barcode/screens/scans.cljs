@@ -31,6 +31,7 @@
                       {:key itemCode
                        :style {:background-color "#999"
                                :padding 10
+                               :margin-bottom 5
                                :border-radius 5
                                :border-color "#555"
                                :border-width 2}

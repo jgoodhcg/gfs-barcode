@@ -20,6 +20,7 @@
              :item {:item-data {}
                     :collapsible-map {}}
              :scanned-barcode nil
+             :scans []
              :session-id nil
              :conversion-data {93901100122 100129, ;; this also gets requested on load
                                93901430021 143002,
