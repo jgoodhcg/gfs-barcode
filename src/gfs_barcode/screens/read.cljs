@@ -44,11 +44,7 @@
                                   (do
                                     (navigate "Item")
                                     (dispatch
-                                     [:set-scanned-barcode data-conformed]))
-                                  (println (str "scanned bar code: "
-                                                data-conformed
-                                                " is the same as prev scan "
-                                                scanned-barcode)))))}]]
+                                     [:set-scanned-barcode data-conformed])))))}]]
 
         (login-view)))))
 

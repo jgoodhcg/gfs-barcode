@@ -35,7 +35,7 @@
                                :border-radius 5
                                :border-color "#555"
                                :border-width 2}
-                       :on-press #(println (str "pressed " itemCode))}
+                       :on-press #(+ 1 1)}
                       [text
                        {:style {:color "white" :text-align "center"
                                 :font-weight "bold"}} itemDesc]])))

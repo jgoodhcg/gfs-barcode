@@ -7,7 +7,8 @@
             [gfs-barcode.common.login :refer [login-view]]
             [gfs-barcode.native :refer [view text button alert
                                         flat-list
-                                        ]]))
+                                        email
+                                        floating-action]]))
 
 (defn item-screen
   [props]
@@ -62,7 +63,17 @@
                                                            (str (:sub-heading d) " - "
                                                                 (:data d))}
                                                      (str (:sub-heading d) " - "
-                                                          (:data d))]))))])))}]])]
+                                                          (:data d))]))))])))}]])
+
+         [floating-action {:actions []
+                           :overlayColor "rgba(0,0,0,0)"
+                           :floatingIcon (r/as-element [text {:style {:font-size 15
+                                                                      :color "white"}}
+                                                        "@"])
+                           :onPressMain #(email
+                                          nil nil nil
+                                          (str "GFS ITEM - " (get item-data "itemCode"))
+                                          nil)}]]
 
         (login-view)))))
 

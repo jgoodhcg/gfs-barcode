@@ -88,7 +88,6 @@
    ;; use fetch to login with creds
    ;; hashed pass of course
    ;; then dispatch the return
-   (println "fetching conversion data")
    (let [conversion-data (-> (js/fetch
                               "https://storage.googleapis.com/gfs-martech-webtools/fullstack-dev-homework/barcode-to-itemcode.json")
                              (.then #(.json %)) ;; warning: `.json` returns a promise that resolves to the parsed json body
@@ -134,14 +133,12 @@
    ;; use fetch to login with creds
    ;; hashed pass of course
    ;; then dispatch the return
-   (println "would fetch login now")
    (dispatch [:set-session-id "123"])
    (dispatch [:get-all-scans "123"])))
 
 (reg-fx
  :scans-request
  (fn [session-id]
-   (println "would fetch scans right now with session-id")
    (dispatch [:set-scans [{:itemCode "100129"
                            :itemDesc "AP Ketchup, Tomato, w/Salt, Crown Collec"}]])))
 
@@ -168,7 +165,6 @@
 (reg-fx
  :item-request
  (fn [item-code]
-   (println (str "Fetching item: " item-code))
    (-> (js/fetch
         (str
          "https://api.gfs.com/ordering/rest/nutritionService/getNutritionInfo?offeringId="
@@ -177,7 +173,6 @@
        (.then #(.json %)) ;; warning: `.json` returns a promise that resolves to the parsed json body
        (.then js->clj)
        (.then (fn [data]
-                (println (str "Received data: " (count data)))
                 (dispatch [:set-item-data (first data)])))
        (.catch #(js/console.error %)))))
 
@@ -185,11 +180,9 @@
  :set-scanned-barcode
  [validate-spec]
  (fn [cofx [_ barcode]]
-   (println (str "Scanned barcode: " barcode))
    (let [db (:db cofx)
          item-code (get (:conversion-data db) barcode)]
 
-     (println (str "Converted item-code: " item-code))
      (merge {:db (assoc db :scanned-barcode barcode)}
 
             (if (some? item-code)
@@ -215,7 +208,6 @@
                                     {un-matched [un-matched]}))
                              (reduce merge)))]
 
-     (println "Sorted keys: " (count sorted-keys-list))
      (merge
       db
       {:item {:item-data item-data
