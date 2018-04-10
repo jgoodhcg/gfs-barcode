@@ -17,6 +17,9 @@
 ;; initial state of app-db
 (def app-db {:camera-permission false
              :message nil
+             :item {:item-data {}
+                    :collapsible-map {}}
+             :scanned-barcode nil
              :session-id nil
              :conversion-data {93901100122 100129, ;; this also gets requested on load
                                93901430021 143002,

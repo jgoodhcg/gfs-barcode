@@ -4,12 +4,14 @@
 (def ReactNative (js/require "react-native"))
 (def Expo (js/require "expo"))
 (def ReactNativeFloatingAction (js/require "react-native-floating-action"))
-(def floating-action (r/adapt-react-class
-                     (.-FloatingAction ReactNativeFloatingAction)))
 (defonce ReactNavigation (js/require "react-navigation"))
 (def ReactNativeCommunications (js/require "react-native-communications"))
-(def email (.-email ReactNativeCommunications))
+;; (def ReactNativeCollapsible (js/require "react-native-collapsible"))
 
+;; (def collapsible (r/adapt-react-class (.-Collapsible ReactNativeCollapsible)))
+(def floating-action (r/adapt-react-class
+                     (.-FloatingAction ReactNativeFloatingAction)))
+(def email (.-email ReactNativeCommunications))
 (def app-registry (.-AppRegistry ReactNative))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def text-input (r/adapt-react-class (.-TextInput ReactNative)))
@@ -21,12 +23,14 @@
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
 (def Alert (.-Alert ReactNative))
 (def alert-fn (.-alert Alert))
+(def button (r/adapt-react-class (.-Button ReactNative)))
+(def flat-list (r/adapt-react-class (.-FlatList ReactNative)))
+
 (defn alert
   ([title]
    (alert-fn title))
   ([title message buttons]
    (alert-fn title message (clj->js buttons) (clj->js {:cancelable false}))))
-(def button (r/adapt-react-class (.-Button ReactNative)))
 
 
 

@@ -20,3 +20,13 @@
  :scans
  (fn [db _]
    (:scans db)))
+
+(reg-sub
+ :item
+ (fn [db _]
+   (:item db)))
+
+(reg-sub
+ :scanned-barcode
+ (fn [db _]
+   (:scanned-barcode db)))

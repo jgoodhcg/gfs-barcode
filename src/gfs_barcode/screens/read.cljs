@@ -12,7 +12,8 @@
   (fn [{:keys [screenProps navigation] :as props}]
     (let [{:keys [navigate goBack]} navigation
           message @(subscribe [:message])
-          session-id @(subscribe [:session-id])]
+          session-id @(subscribe [:session-id])
+          scanned-barcode @(subscribe [:scanned-barcode])]
 
       (error-alert message)
 
@@ -27,7 +28,6 @@
                                     :width 350}
                             :onBarCodeRead
                             (fn [brjson]
-                              (navigate "Item")
                               (let [br (js->clj
                                         brjson
                                         :keywordize-keys true)
@@ -38,8 +38,15 @@
                                                         (butlast)
                                                         (clojure.string/join))
                                     type (:type br)]
-                                (dispatch
-                                 [:set-scanned-barcode data-conformed])))}]]
+                                (if (not= scanned-barcode data-conformed)
+                                  (do
+                                    (navigate "Item")
+                                    (dispatch
+                                     [:set-scanned-barcode data-conformed]))
+                                  (println (str "scanned bar code: "
+                                                data-conformed
+                                                " is the same as prev scan "
+                                                scanned-barcode)))))}]]
 
         (login-view)))))
 
